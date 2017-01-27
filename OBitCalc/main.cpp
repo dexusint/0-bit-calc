@@ -1,8 +1,7 @@
 #include <iostream>
 
 #include "application.h"
-#include "master-impl.h"
-#include "slave-impl.h"
+#include "vector-impl.h"
 
 using namespace std;
 
@@ -17,7 +16,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (argc != 3) {
-		cout << "Two parameters should be passed to application: full path to file and boolean indicator (1 - master, 0 - slave)" << endl;
+		cout << "Two parametrs needed (2nd == 1 for vector implementation)" << endl;
 		cout << "End of work";
 
 		getchar();
@@ -25,14 +24,20 @@ int main(int argc, char *argv[])
 	}
 
 	string pathToFile(argv[1]);
-	const bool isMaster(atoi(argv[2]));
+	const int implementationType(atoi(argv[2]));
 	unique_ptr<Implementation> impl;
-	if (isMaster) {
-		impl.reset(new MasterImpl(pathToFile));
+	
+	switch (implementationType) {
+		case(1) : {
+			impl.reset(new VectorImpl(pathToFile));
+			break;
+		}
+		default: {
+			cout << "Incorrect implementation" << endl;
+			return 1;
+		}
 	}
-	else {
-		impl.reset(new SlaveImpl(pathToFile));
-	}
+
 
 	Application app(move(impl));
 	app.run();
