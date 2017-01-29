@@ -14,12 +14,15 @@ std::string ToString(size_t sz) {
 Implementation::Implementation(std::string pathToFile)
 :m_pathToFile(pathToFile)
 {
-	boost::hash<std::string> string_hash;
-	std::size_t hash = string_hash(m_pathToFile);
-	m_sharedMemName = m_pathToFile + ToString(hash);
-	std::cout << hash << std::endl;
+	m_sharedMemName = "HappyMem";
+	//shared_memory_object::remove(m_sharedMemName.c_str());
+	//boost::hash<std::string> string_hash;
+	//std::size_t hash = string_hash(m_pathToFile);
+	//m_sharedMemName = m_pathToFile + ToString(hash);
+	//std::cout << hash << std::endl;
+
 }
 
 Implementation::~Implementation() {
-	shared_memory_object::remove(m_sharedMemName.c_str());
+	//shared_memory_object::remove(m_sharedMemName.c_str());
 }

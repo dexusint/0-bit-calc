@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "application.h"
-#include "vector-impl.h"
+#include "myclassimpl.h"
 
 using namespace std;
 
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
 	
 	switch (implementationType) {
 		case(1) : {
-			impl.reset(new VectorImpl(pathToFile));
+			impl.reset(new MyClassImpl(pathToFile));
 			break;
 		}
 		default: {
