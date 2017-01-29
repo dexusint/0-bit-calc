@@ -1,5 +1,5 @@
 #include <iostream>
-#include <boost/functional/hash.hpp>a
+#include <boost/functional/hash.hpp>
 
 #include "implementation.h"
 
@@ -14,7 +14,7 @@ std::string ToString(size_t sz) {
 Implementation::Implementation(std::string pathToFile)
 :m_pathToFile(pathToFile)
 {
-	m_sharedMemName = "HappyMem";
+	m_sharedMemName = "HappyMem13";
 	//shared_memory_object::remove(m_sharedMemName.c_str());
 	//boost::hash<std::string> string_hash;
 	//std::size_t hash = string_hash(m_pathToFile);

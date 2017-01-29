@@ -15,13 +15,16 @@ public:
 	typedef boost::interprocess::allocator<int_vector, segment_manager_t>                     int_vector_allocator;
 
 	MyClass(const void_allocator &void_alloc)
-		:m_myVector(void_alloc)
+		:m_myVector(void_alloc), m_resVector(void_alloc)
 	{}
 
-	boost::interprocess::interprocess_mutex      mutex;
+	boost::interprocess::interprocess_mutex      initDataMutex;
+	boost::interprocess::interprocess_mutex      processFileMutex;
 	boost::interprocess::interprocess_condition  cond_empty;
 	boost::interprocess::interprocess_condition  cond_full;
 
 	int_vector m_myVector;
+	bool m_myVectorEmpty = true;
+	int_vector m_resVector;
 	int processedCount = 0;
 };

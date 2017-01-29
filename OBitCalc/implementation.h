@@ -12,7 +12,7 @@ class Implementation
 {
 public:
 	Implementation(std::string pathToFile);
-	~Implementation();
+	virtual ~Implementation();
 	virtual int run() = 0;
 protected:
 	std::string m_pathToFile;

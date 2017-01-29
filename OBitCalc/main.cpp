@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "application.h"
 #include "myclassimpl.h"
@@ -22,8 +23,11 @@ int main(int argc, char *argv[])
 		getchar();
 		return 1;
 	}
+	string programPath(argv[0]);
+	size_t pos = programPath.find_last_of("/\\");
+	string pathToFile(programPath.substr(0, pos) +'\\' + argv[1]);
+	//replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
 
-	string pathToFile(argv[1]);
 	const int implementationType(atoi(argv[2]));
 	unique_ptr<Implementation> impl;
 	

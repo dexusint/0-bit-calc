@@ -159,6 +159,7 @@
     <ClCompile Include="implementation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myclass.cpp" />
+    <ClCompile Include="myclassimpl.cpp" />
     <ClCompile Include="vector-impl.cpp" />
   </ItemGroup>
   <ItemGroup>

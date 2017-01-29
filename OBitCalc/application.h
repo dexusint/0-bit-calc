@@ -1,4 +1,5 @@
-#pragma once
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
 #include <fstream>
 #include <iostream>
@@ -25,9 +26,13 @@ public:
 	Application& operator=(const Application& rhs) = delete;
 
 	template <class Generator>
-	static void createTestFile(int numBytes = FILE_SIZE, Generator gen = []()->char {return '0'; }) {
-		ofstream out("test.txt", std::ofstream::out);
-		generate_n(std::ostream_iterator<char>(out, ""), FILE_SIZE, gen);
+	static void createTestFile(int numBytes = FILE_SIZE, Generator gen = []() {return 0; }) {
+		ofstream out("test.txt", std::ios::out | std::ios::binary);
+		std::vector<char> arr(FILE_SIZE, 0);
+		out.write((const char *)arr.data(), sizeof(char) * FILE_SIZE);
+		//generate_n(arr, FILE_SIZE, gen);
+		//std::ostream_iterator<bint> out_iter(out);
+		//copy(arr.begin(), arr.end(), out_iter);
 		out.close();
 	}
 
@@ -36,3 +41,5 @@ public:
 private:
 	std::unique_ptr<Implementation> m_pImpl;
 };
+
+#endif //APPLICATION_H
