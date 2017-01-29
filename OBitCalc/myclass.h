@@ -20,11 +20,15 @@ public:
 
 	boost::interprocess::interprocess_mutex      initDataMutex;
 	boost::interprocess::interprocess_mutex      processFileMutex;
+	boost::interprocess::interprocess_mutex      processedCountMutex;
+
 	boost::interprocess::interprocess_condition  cond_empty;
 	boost::interprocess::interprocess_condition  cond_full;
+
+	boost::interprocess::interprocess_condition  cond_dataReady;
 
 	int_vector m_myVector;
 	bool m_myVectorEmpty = true;
 	int_vector m_resVector;
-	int processedCount = 0;
+	unsigned long int m_processedCount = 0;
 };

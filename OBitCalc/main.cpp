@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
 	string programPath(argv[0]);
 	size_t pos = programPath.find_last_of("/\\");
 	string pathToFile(programPath.substr(0, pos) +'\\' + argv[1]);
-	//replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
-
+	replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
+	cout << pathToFile;
 	const int implementationType(atoi(argv[2]));
 	unique_ptr<Implementation> impl;
 	
@@ -41,7 +41,6 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 	}
-
 
 	Application app(move(impl));
 	app.run();

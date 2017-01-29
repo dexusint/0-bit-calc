@@ -13,7 +13,7 @@
 
 class Application {
 public:
-	const static int FILE_SIZE = 1024; // 1 KByte
+	const static int FILE_SIZE = 1000 * 1024 * 1024; // 1 KByte
 	Application(std::unique_ptr<Implementation> impl):
 		m_pImpl(move(impl))
 	{}

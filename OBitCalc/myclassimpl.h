@@ -39,9 +39,11 @@ public:
 	}
 
 	int run() override;
-	int const BLOCK_SIZE = 1024;
+	int const BLOCK_SIZE = 1024 * 1024;
 
 private:
 	int initData();
 	void processFileSegment(int segment);
+	unsigned long int m_fileLength = 0;
+	unsigned long int m_blocksCount = 0;
 };
