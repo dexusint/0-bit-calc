@@ -41,6 +41,6 @@ public:
 private:
 	int initData();
 	void processFileSegment(int segment);
-	unsigned long int m_fileLength = 0;
-	unsigned long int m_blocksCount = 0;
+	unsigned long long int m_fileLength = 0;
+	unsigned long long int m_blocksCount = 0;
 };
