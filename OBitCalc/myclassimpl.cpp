@@ -66,24 +66,20 @@ int MyClassImpl::run() {
 				m_pMyClass->m_myVector[index] = 1;
 			}
 			else {
-				bool cont = false;
-				
+			
 				{
 					scoped_lock<interprocess_mutex> lock(m_pMyClass->processedCountMutex);
 
-					if (m_pMyClass->m_processedCount == m_blocksCount) {
-						unsigned long int result = accumulate(m_pMyClass->m_resVector.begin(), m_pMyClass->m_resVector.end(), 0);
-						cout << "Num of zero bits is: " << result << endl;
-						m_pMyClass->cond_dataReady.notify_one();
-						
-					}
-					else {
+					if (m_pMyClass->m_processedCount < m_blocksCount) {
 						m_pMyClass->cond_dataReady.wait(lock);
-						cont = true;
 					}
+					
+					unsigned long int result = accumulate(m_pMyClass->m_resVector.begin(), m_pMyClass->m_resVector.end(), 0);
+					cout << "Num of zero bits is: " << result << endl;
+					m_pMyClass->cond_dataReady.notify_one();
 				}
 
-				if (cont) continue;
+				m_pMyClass->cond_dataReady.notify_all();
 
 				break;
 			}
