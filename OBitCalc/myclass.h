@@ -35,4 +35,6 @@ public:
 	bool m_myVectorEmpty = true;
 	ullint_vector m_resVector;
 	unsigned long long int m_processedCount = 0;
+	unsigned long long int  m_blocksCount = 0;
+	unsigned long long int m_fileLength = 0;
 };

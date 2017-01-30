@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 		cout << "File generation comleted" << endl;
 	}
 
-	if (argc != 3) {
+	if (argc != 4) {
 		cout << "Two parametrs needed (2nd == 1 for vector implementation)" << endl;
 		cout << "End of work";
 
@@ -28,11 +28,12 @@ int main(int argc, char *argv[])
 	string pathToFile(programPath.substr(0, pos) +'\\' + argv[1]);
 	replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
 	const int implementationType(atoi(argv[2]));
+	const int firstProcess(atoi(argv[3]));
 	unique_ptr<Implementation> impl;
 	
 	switch (implementationType) {
 		case(1) : {
-			impl.reset(new MyClassImpl(pathToFile));
+			impl.reset(new MyClassImpl(pathToFile, firstProcess));
 			break;
 		}
 		default: {

@@ -11,11 +11,12 @@ std::string ToString(size_t sz) {
 	return ss.str();
 }
 
-Implementation::Implementation(std::string pathToFile)
+Implementation::Implementation(std::string pathToFile, bool firstProcess)
 :m_pathToFile(pathToFile)
 {
-	m_sharedMemName = "HappyMem";
-	shared_memory_object::remove(m_sharedMemName.c_str());
+	m_sharedMemName = "HappyMem1";
+	if(firstProcess)
+		shared_memory_object::remove(m_sharedMemName.c_str());
 
 
 	//boost::hash<std::string> string_hash;

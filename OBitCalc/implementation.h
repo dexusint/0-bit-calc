@@ -11,7 +11,7 @@
 class Implementation
 {
 public:
-	Implementation(std::string pathToFile);
+	Implementation(std::string pathToFile, bool firstProcess);
 	virtual ~Implementation();
 	virtual int run() = 0;
 protected:
