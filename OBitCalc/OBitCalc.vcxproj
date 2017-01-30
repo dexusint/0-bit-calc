@@ -160,7 +160,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="myclass.cpp" />
     <ClCompile Include="myclassimpl.cpp" />
-    <ClCompile Include="vector-impl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
@@ -168,7 +167,6 @@
     <ClInclude Include="implementation.h" />
     <ClInclude Include="myclass.h" />
     <ClInclude Include="myclassimpl.h" />
-    <ClInclude Include="vector-impl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
