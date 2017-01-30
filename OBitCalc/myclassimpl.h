@@ -15,8 +15,8 @@ MyClass *m_pMyClass;
 std::string m_pathToFile;
 
 public:
-	typedef boost::interprocess::managed_shared_memory::segment_manager                       segment_manager_t;
-	typedef boost::interprocess::allocator<void, segment_manager_t>                           void_allocator;
+	typedef boost::interprocess::managed_shared_memory::segment_manager segment_manager_t;
+	typedef boost::interprocess::allocator<void, segment_manager_t> void_allocator;
 	MyClassImpl(std::string pathToFile):
 		m_pathToFile(pathToFile),
 		Implementation(pathToFile),
@@ -26,10 +26,7 @@ public:
 		if (m_segment.find<MyClass>("MyClass").first) {
 			m_segment.destroy<MyClass>("MyClass");
 		}
-		//Construct the shared memory map and fill it
-		m_pMyClass = m_segment.find_or_construct<MyClass>
-			//(object name), (first ctor parameter, second ctor parameter)
-			("MyClass")(alloc_inst);
+		m_pMyClass = m_segment.find_or_construct<MyClass>("MyClass")(alloc_inst);
 	}
 
 	~MyClassImpl() {
@@ -39,7 +36,7 @@ public:
 	}
 
 	int run() override;
-	int const BLOCK_SIZE = 1024 * 1024;
+	unsigned int const BLOCK_SIZE = 1024 * 1024;
 
 private:
 	int initData();

@@ -10,8 +10,12 @@ class MyClass {
 public:
 	typedef boost::interprocess::managed_shared_memory::segment_manager                       segment_manager_t;
 	typedef boost::interprocess::allocator<void, segment_manager_t>                           void_allocator;
+	typedef boost::interprocess::allocator<char, segment_manager_t>                            char_allocator;
+	typedef boost::interprocess::vector<char, char_allocator>                                 char_vector;
 	typedef boost::interprocess::allocator<int, segment_manager_t>                            int_allocator;
 	typedef boost::interprocess::vector<int, int_allocator>                                   int_vector;
+	typedef boost::interprocess::allocator<unsigned long int, segment_manager_t>              ulint_allocator;
+	typedef boost::interprocess::vector<unsigned long int, ulint_allocator>                   ulint_vector;
 	typedef boost::interprocess::allocator<int_vector, segment_manager_t>                     int_vector_allocator;
 
 	MyClass(const void_allocator &void_alloc)
@@ -22,13 +26,12 @@ public:
 	boost::interprocess::interprocess_mutex      processFileMutex;
 	boost::interprocess::interprocess_mutex      processedCountMutex;
 
-	boost::interprocess::interprocess_condition  cond_empty;
-	boost::interprocess::interprocess_condition  cond_full;
-
+	boost::interprocess::interprocess_condition  cond_waitMyVector;
 	boost::interprocess::interprocess_condition  cond_dataReady;
 
-	int_vector m_myVector;
+	char_vector m_myVector;
+	bool m_myVectorFree = true;
 	bool m_myVectorEmpty = true;
-	int_vector m_resVector;
+	ulint_vector m_resVector;
 	unsigned long int m_processedCount = 0;
 };

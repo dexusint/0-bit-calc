@@ -15,7 +15,7 @@ int MyClassImpl::initData() {
 		return 1;
 	}
 	ifile.seekg(0, std::ios_base::end);
-	int length = ifile.tellg();
+	unsigned long int length = ifile.tellg();
 	ifile.close();
 
 	if (length > 0 && length <= BLOCK_SIZE) {
@@ -56,27 +56,31 @@ int MyClassImpl::run() {
 	}
 
 	while (true) {
-		int index = 0;
+		unsigned long int index = 0;
 		{
 			scoped_lock<interprocess_mutex> lock(m_pMyClass->processFileMutex);
+			if (!m_pMyClass->m_myVectorFree) {
+				m_pMyClass->cond_waitMyVector.wait(lock);
+			}
 			const auto pos = find(m_pMyClass->m_myVector.begin(), m_pMyClass->m_myVector.end(), 0);
 
 			if (pos != m_pMyClass->m_myVector.end()) {
 				index = distance(m_pMyClass->m_myVector.begin(), pos);
 				m_pMyClass->m_myVector[index] = 1;
+				m_pMyClass->m_myVectorFree = true;
+				m_pMyClass->cond_waitMyVector.notify_one();
 			}
 			else {
-			
+				lock.unlock();
 				{
-					scoped_lock<interprocess_mutex> lock(m_pMyClass->processedCountMutex);
+					scoped_lock<interprocess_mutex> lockDataOutput(m_pMyClass->processedCountMutex);
 
 					if (m_pMyClass->m_processedCount < m_blocksCount) {
-						m_pMyClass->cond_dataReady.wait(lock);
+						m_pMyClass->cond_dataReady.wait(lockDataOutput);
 					}
 					
 					unsigned long int result = accumulate(m_pMyClass->m_resVector.begin(), m_pMyClass->m_resVector.end(), 0);
 					cout << "Num of zero bits is: " << result << endl;
-					m_pMyClass->cond_dataReady.notify_one();
 				}
 
 				m_pMyClass->cond_dataReady.notify_all();
@@ -87,12 +91,12 @@ int MyClassImpl::run() {
 
 		
 		ifile.seekg(index * BLOCK_SIZE, std::ios_base::beg);
-		int length = m_fileLength - index * BLOCK_SIZE;
+		unsigned long int length = m_fileLength - index * BLOCK_SIZE;
 		if (length > BLOCK_SIZE) length = BLOCK_SIZE;
 		
 		ifile.read(pChars, length);
 
-		int sum = accumulate(pChars, pChars + length, 0, [](int init, char b) {
+		unsigned long int sum = accumulate(pChars, pChars + length, 0, [](unsigned long int init, char b) {
 			unsigned long int sum = init;
 			for (char bit = 0; bit < 8; ++bit) {
 				sum += (1 << bit) & b ? 0 : 1;
