@@ -28,12 +28,10 @@ int MyClassImpl::initData() {
 
 	if (length > 0 && length <= BLOCK_SIZE) {
 		m_pMyClass->m_blocksCount = 1;
-		m_pMyClass->m_myVector.push_back(0);
 		m_pMyClass->m_resVector.push_back(0);
 	}
 	else if (length > BLOCK_SIZE) {
 		m_pMyClass->m_blocksCount = length%BLOCK_SIZE ? length / BLOCK_SIZE : 1 + length / BLOCK_SIZE;
-		m_pMyClass->m_myVector.assign(m_pMyClass->m_blocksCount, 0);
 		m_pMyClass->m_resVector.assign(m_pMyClass->m_blocksCount, 0);
 	}
 
@@ -117,11 +115,6 @@ int MyClassImpl::run() {
 			scoped_lock<interprocess_mutex> lock(m_pMyClass->processedCountMutex);
 			m_pMyClass->m_processedCount++;
 		}
-
-
-		//boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-
-		
 	}
 
 	ifile.close();
