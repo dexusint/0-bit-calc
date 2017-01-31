@@ -158,12 +158,10 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="implementation.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="myclass.cpp" />
     <ClCompile Include="myclassimpl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
-    <ClInclude Include="doc_anonymous_condition_shared_data.hpp" />
     <ClInclude Include="implementation.h" />
     <ClInclude Include="myclass.h" />
     <ClInclude Include="myclassimpl.h" />

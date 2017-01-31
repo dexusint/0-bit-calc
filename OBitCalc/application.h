@@ -13,7 +13,7 @@
 
 class Application {
 public:
-	const static int FILE_SIZE = 1000 * 1024 * 1024; // 1 KByte
+	const static int DEFAULT_FILE_SIZE = 1024 * 1024; // Bytes
 	Application(std::unique_ptr<Implementation> impl):
 		m_pImpl(move(impl))
 	{}
@@ -26,11 +26,11 @@ public:
 	Application& operator=(const Application& rhs) = delete;
 
 	template <class Generator>
-	static void createTestFile(int numBytes = FILE_SIZE, Generator gen = []() {return 0; }) {
-		ofstream out("test.txt", std::ios::out | std::ios::binary);
-		std::vector<char> arr(FILE_SIZE, 0);
-		out.write((const char *)arr.data(), sizeof(char) * FILE_SIZE);
-		//generate_n(arr, FILE_SIZE, gen);
+	static void createTestFile(const std::string fileName = "test.txt", int numBytes = DEFAULT_FILE_SIZE, Generator gen = []() {return 1; }) {
+		ofstream out(fileName, std::ios::out | std::ios::binary);
+		std::vector<char> arr(numBytes, 0);
+		generate_n(arr.begin(), numBytes, gen);
+		out.write((const char *)arr.data(), sizeof(char) * numBytes);
 		//std::ostream_iterator<bint> out_iter(out);
 		//copy(arr.begin(), arr.end(), out_iter);
 		out.close();

@@ -21,6 +21,11 @@ int MyClassImpl::initData() {
 	unsigned long long int length = ifile.tellg();
 	ifile.close();
 
+	while (length / BLOCK_SIZE > 1000)
+	{
+		BLOCK_SIZE *= 2;
+	}
+
 	if (length > 0 && length <= BLOCK_SIZE) {
 		m_pMyClass->m_blocksCount = 1;
 		m_pMyClass->m_myVector.push_back(0);
@@ -33,14 +38,9 @@ int MyClassImpl::initData() {
 	}
 
 	m_pMyClass->m_fileLength = length;
-
-	m_pMyClass->pos = m_pMyClass->m_myVector.begin();
+	m_pMyClass->BLOCK_SIZE = BLOCK_SIZE;
 
 	return 0;
-}
-
-void MyClassImpl::processFileSegment(int segment) {
-
 }
 
 int MyClassImpl::run() {
@@ -51,9 +51,6 @@ int MyClassImpl::run() {
 		return 1;
 	}
 
-	unique_ptr<char []> pChars(new char[BLOCK_SIZE]);
-	char* const raw_pChars = pChars.get();
-	
 	{
 		scoped_lock<interprocess_mutex> lock(m_pMyClass->initDataMutex);
 		if (m_pMyClass->m_myVectorEmpty) {
@@ -61,6 +58,9 @@ int MyClassImpl::run() {
 			m_pMyClass->m_myVectorEmpty = false;
 		}
 	}
+	BLOCK_SIZE = m_pMyClass->BLOCK_SIZE;
+	unique_ptr<char[]> pChars(new char[BLOCK_SIZE]);
+	char* const raw_pChars = pChars.get();
 
 	while (true) {
 		
@@ -69,14 +69,10 @@ int MyClassImpl::run() {
 			if (!m_pMyClass->m_myVectorFree) {
 				m_pMyClass->cond_waitMyVector.wait(lock);
 			}
-			//const auto pos = find(m_pMyClass->m_myVector.begin(), m_pMyClass->m_myVector.end(), 0);
 
-			if (m_pMyClass->pos != m_pMyClass->m_myVector.end()) {
-				//index = distance(m_pMyClass->m_myVector.begin(), pos);
-				m_pMyClass->m_myVector[m_pMyClass->index] = 1;
+			if (m_pMyClass->index < m_pMyClass->m_blocksCount) {
 				m_pMyClass->m_myVectorFree = true;
 				index = m_pMyClass->index++;
-				m_pMyClass->pos++;
 				cout << m_pMyClass->index << endl;
 				lock.unlock();
 				m_pMyClass->cond_waitMyVector.notify_one();
@@ -85,17 +81,16 @@ int MyClassImpl::run() {
 				lock.unlock();
 				{
 					scoped_lock<interprocess_mutex> lockDataOutput(m_pMyClass->processedCountMutex);
-
-					//cout << m_pMyClass->m_blocksCount << "  " << m_pMyClass->m_processedCount << endl;
 					if (m_pMyClass->m_processedCount != m_pMyClass->m_blocksCount) {
 						m_pMyClass->cond_dataReady.wait(lockDataOutput);
+					}
+					else {
+						m_pMyClass->cond_dataReady.notify_all();
 					}
 					
 					unsigned long long int result = accumulate(m_pMyClass->m_resVector.begin(), m_pMyClass->m_resVector.end(), (unsigned long long int)0);
 					cout << "Num of zero bits is: " << result << endl;
 				}
-
-				m_pMyClass->cond_dataReady.notify_all();
 
 				break;
 			}

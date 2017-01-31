@@ -29,7 +29,6 @@ public:
 	boost::interprocess::interprocess_condition  cond_dataReady;
 
 	char_vector m_myVector;
-	char_vector::iterator pos;
 	unsigned long long int index = 0;
 	bool m_myVectorFree = true;
 	bool m_myVectorEmpty = true;
@@ -37,4 +36,5 @@ public:
 	unsigned long long int m_processedCount = 0;
 	unsigned long long int  m_blocksCount = 0;
 	unsigned long long int m_fileLength = 0;
+	unsigned long long int BLOCK_SIZE = 1024;
 };

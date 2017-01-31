@@ -33,10 +33,10 @@ public:
 	}
 
 	int run() override;
-	unsigned int const BLOCK_SIZE = 1024 * 1024 * 10;
+	
 
 private:
 	int initData();
-	void processFileSegment(int segment);
 	unsigned long long int index = 0;
+	unsigned long long int BLOCK_SIZE = 1024;
 };

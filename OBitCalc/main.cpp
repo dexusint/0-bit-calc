@@ -8,43 +8,35 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-
-	if (argc == 2) {
-		auto gen = []()->char {return '0'; };
-		Application::createTestFile<decltype(gen)>(10, gen);
+	if (argc == 4) {
+		string fileName(argv[1]);
+		const int fileSize(atoi(argv[2])); //In Mbytes
+		const char value((unsigned char)atoi(argv[3]));
+		auto gen = [value]() {return value; };
+		Application::createTestFile<decltype(gen)>(fileName, fileSize * 1024 * 1024, gen);
 
 		cout << "File generation comleted" << endl;
-	}
+	}else if (argc == 3) {
+		string programPath(argv[0]);
+		size_t pos = programPath.find_last_of("/\\");
+		string pathToFile(programPath.substr(0, pos) + '\\' + argv[1]);
+		replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
+		const bool firstProcess(atoi(argv[2]) ? true : false);
+		unique_ptr<Implementation> impl;
+		impl.reset(new MyClassImpl(pathToFile, firstProcess));
 
-	if (argc != 4) {
-		cout << "Two parametrs needed (2nd == 1 for vector implementation)" << endl;
-		cout << "End of work";
+		Application app(move(impl));
+		app.run();
 
 		getchar();
-		return 1;
 	}
-	string programPath(argv[0]);
-	size_t pos = programPath.find_last_of("/\\");
-	string pathToFile(programPath.substr(0, pos) +'\\' + argv[1]);
-	replace(pathToFile.begin(), pathToFile.end(), '\\', '/');
-	const int implementationType(atoi(argv[2]));
-	const int firstProcess(atoi(argv[3]));
-	unique_ptr<Implementation> impl;
-	
-	switch (implementationType) {
-		case(1) : {
-			impl.reset(new MyClassImpl(pathToFile, firstProcess));
-			break;
-		}
-		default: {
-			cout << "Incorrect implementation" << endl;
-			return 1;
-		}
+	else {
+		cout << "For file generation print pass next params fileName, size of file (Mbytes) and value [0, 256)" << endl;
+		cout << "Example:  ./OBitCalc.exe \"text.txt\" \"100\" \"255\"" << endl;
+		cout << endl;
+		cout << "For file generation print pass next params fileName, master(1)/slave(0) (master should be runned first)" << endl;
+		cout << "Example:  ./OBitCalc.exe \"text.txt\" \"1\"" << endl;
 	}
 
-	Application app(move(impl));
-	app.run();
-
-	getchar();
 	return 0;
 }

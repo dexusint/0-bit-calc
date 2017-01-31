@@ -1,5 +1,7 @@
 #include <iostream>
 #include <boost/functional/hash.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <ctime>
 
 #include "implementation.h"
 
@@ -14,16 +16,18 @@ std::string ToString(size_t sz) {
 Implementation::Implementation(std::string pathToFile, bool firstProcess)
 :m_pathToFile(pathToFile)
 {
-	m_sharedMemName = "HappyMem1";
-	if(firstProcess)
-		shared_memory_object::remove(m_sharedMemName.c_str());
-
+	boost::filesystem::path p(pathToFile);
+	std::time_t t = boost::filesystem::last_write_time(p);
+	size_t pos = pathToFile.find_last_of("/\\");
+	std::string fileName(pathToFile.substr(pos + 1));
 
 	//boost::hash<std::string> string_hash;
 	//std::size_t hash = string_hash(m_pathToFile);
-	//m_sharedMemName = m_pathToFile + ToString(hash);
-	//std::cout << hash << std::endl;
+	m_sharedMemName = fileName + ToString(t);
+	std::cout << m_sharedMemName << std::endl;
 
+	if(firstProcess)
+		shared_memory_object::remove(m_sharedMemName.c_str());
 }
 
 Implementation::~Implementation() {
